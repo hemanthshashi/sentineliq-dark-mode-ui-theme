@@ -11,7 +11,7 @@ spring:
     show-sql: true
 
   cache:
-    type: none
+    type: simple   # ✅ in-memory cache (no Redis)
 
 server:
   port: 8081
