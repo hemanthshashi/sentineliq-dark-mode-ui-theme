@@ -10,5 +10,8 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  cache:
+    type: none
+
 server:
-  port: 8080
+  port: 8081

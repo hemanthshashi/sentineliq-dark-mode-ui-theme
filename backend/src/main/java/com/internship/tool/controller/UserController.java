@@ -2,11 +2,9 @@ package com.internship.tool.controller;
 
 import com.internship.tool.entity.User;
 import com.internship.tool.service.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,28 +13,34 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @GetMapping("/me")
+    public ResponseEntity<?> me(org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(authentication.getAuthorities());
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @PostMapping("/create")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.createUser(user));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(id, user));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
