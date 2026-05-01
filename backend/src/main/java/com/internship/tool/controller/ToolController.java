@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tools")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ToolController {
 
     private final ToolService toolService;
