@@ -1,5 +1,5 @@
 package com.internship.tool.config;
-
+import org.springframework.lang.NonNull;
 import com.internship.tool.service.JwtService;
 import com.internship.tool.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -25,12 +25,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
+  @Override
+ protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+   ) throws ServletException, IOException {
 
       String path = request.getServletPath();
 
@@ -38,7 +38,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
     return;
 
-}
+        }
 
         final String authHeader = request.getHeader("Authorization");
 
@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
       } catch (Exception e) {
     filterChain.doFilter(request, response);
     return;
-}
+      }
         if (email != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
 

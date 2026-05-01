@@ -2,6 +2,7 @@ package com.internship.tool.service;
 
 import com.internship.tool.entity.User;
 import com.internship.tool.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @CacheEvict(value = {"users", "user"}, allEntries = true)
     public void deleteUser(Long id) {
-        User user = getUserById(id);
+     User user = getUserById(id);
         userRepository.delete(user);
     }
 }
