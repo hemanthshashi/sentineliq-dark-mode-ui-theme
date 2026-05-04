@@ -1,10 +1,15 @@
 import os
 import time
+import logging
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".env")
-
+logging.basicConfig(
+    filename="app.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 class GroqClient:
     def __init__(self):
@@ -62,19 +67,24 @@ class GroqClient:
     # ✅ Main function
     def generate_response(self, prompt):
 
+        logging.info(f"Received prompt: {prompt}")
+
         # Step 1: Validate
         is_valid, error = self.validate_input(prompt)
         if not is_valid:
+            logging.warning("Invalid input received")
             return {"error": error}
 
         # Step 2: Sanitize
         clean_prompt, error = self.sanitize_input(prompt)
         if error:
+            logging.warning("Malicious input detected")
             return {"error": error}
 
         # Step 3: Rate limit
         allowed, error = self.check_rate_limit()
         if not allowed:
+            logging.warning("Rate limit exceeded")
             return {"error": error}
 
         retries = 3
@@ -89,10 +99,11 @@ class GroqClient:
                     temperature=0.7
                 )
 
+                logging.info("Response generated successfully")
                 return response.choices[0].message.content
 
             except Exception as e:
-                print(f"⚠️ Attempt {attempt+1} failed:", e)
+                logging.error(f"API error: {e}")
                 time.sleep(2)
 
         return {
