@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8fafc;
+}
+
+.app {
+  padding: 24px;
+}
+
+.title {
+  color: #1B4F8A;
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.btn-primary {
+  background-color: #1B4F8A;
+  color: white;
+  min-height: 44px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  cursor: pointer;
+}
