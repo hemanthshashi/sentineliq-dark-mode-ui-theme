@@ -1,8 +1,28 @@
-.env
+# Maven
 target/
-node_modules/
-__pycache__/
-chroma_data/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
 .idea/
 .vscode/
-*.log
+*.iml
+
+# Environment files
+.env
+
+# Java
+*.class
+
+# Node (if frontend exists)
+node_modules/
+
+# Mac
+.AppleDouble
+.LSOverride
