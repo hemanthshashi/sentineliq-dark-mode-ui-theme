@@ -14,4 +14,4 @@ spring:
     type: simple   # ✅ in-memory cache (no Redis)
 
 server:
-  port: 8081
+  port: 8080
