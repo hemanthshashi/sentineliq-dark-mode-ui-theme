@@ -1,8 +1,11 @@
 package com.internship.tool.controller;
 
+import com.internship.tool.dto.ToolRequest;
 import com.internship.tool.dto.ToolResponse;
 import com.internship.tool.entity.Tool;
 import com.internship.tool.service.ToolService;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,16 +36,17 @@ public class ToolController {
         return toolService.getToolById(id);
     }
 
-    @PostMapping
-    public ToolResponse createTool(@RequestBody Tool tool) {
-        return toolService.createTool(tool);
-    }
+      @PostMapping
+       public ResponseEntity<ToolResponse> createTool(@RequestBody ToolRequest request) {
+       return ResponseEntity.ok(toolService.createTool(request));
+     }     
 
-    @PutMapping("/{id}")
-    public ToolResponse updateTool(@PathVariable Long id, @RequestBody Tool tool) {
-        return toolService.updateTool(id, tool);
-    }
-
+     @PutMapping("/{id}")
+      public ResponseEntity<ToolResponse> updateTool(
+        @PathVariable Long id,
+        @RequestBody ToolRequest request) {
+    return ResponseEntity.ok(toolService.updateTool(id, request));
+       }
     @DeleteMapping("/{id}")
     public String deleteTool(@PathVariable Long id) {
         toolService.deleteTool(id);
