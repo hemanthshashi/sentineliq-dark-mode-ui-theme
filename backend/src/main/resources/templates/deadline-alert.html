@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Deadline Alert</title>
+</head>
+<body>
+    <h2>Deadline Alert</h2>
+
+    <p>Hello <span th:text="${name}">User</span>,</p>
+
+    <p>Your internship task deadline is approaching.</p>
+
+    <p>
+        <b>Deadline:</b>
+        <span th:text="${deadline}">Today 11:59 PM</span>
+    </p>
+
+    <p>Please complete the task, test APIs in Postman, and push the code to GitHub.</p>
+
+    <br>
+
+    <p>Regards,</p>
+    <p><b>CampusPe Internship Team</b></p>
+</body>
+</html>

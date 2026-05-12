@@ -2,9 +2,9 @@ package com.internship.tool.controller;
 
 import com.internship.tool.dto.ToolRequest;
 import com.internship.tool.dto.ToolResponse;
-import com.internship.tool.entity.Tool;
 import com.internship.tool.service.ToolService;
-
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,20 +36,26 @@ public class ToolController {
         return toolService.getToolById(id);
     }
 
-      @PostMapping
-       public ResponseEntity<ToolResponse> createTool(@RequestBody ToolRequest request) {
-       return ResponseEntity.ok(toolService.createTool(request));
-     }     
+    @PostMapping
+    public ResponseEntity<ToolResponse> createTool(
+            @Valid @RequestBody ToolRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(toolService.createTool(request));
+    }
 
-     @PutMapping("/{id}")
-      public ResponseEntity<ToolResponse> updateTool(
-        @PathVariable Long id,
-        @RequestBody ToolRequest request) {
-    return ResponseEntity.ok(toolService.updateTool(id, request));
-       }
+    @PutMapping("/{id}")
+    public ResponseEntity<ToolResponse> updateTool(
+            @PathVariable Long id,
+            @Valid @RequestBody ToolRequest request
+    ) {
+        return ResponseEntity.ok(toolService.updateTool(id, request));
+    }
+
     @DeleteMapping("/{id}")
-    public String deleteTool(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTool(@PathVariable Long id) {
         toolService.deleteTool(id);
-        return "Tool deleted successfully";
+        return ResponseEntity.ok("Tool deleted successfully");
     }
 }

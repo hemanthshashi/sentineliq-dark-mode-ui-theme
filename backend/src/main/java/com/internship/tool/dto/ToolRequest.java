@@ -1,9 +1,14 @@
 package com.internship.tool.dto;
+import jakarta.validation.constraints.NotBlank;
+
 
 public class ToolRequest {
 
-    private String name;
-    private String category;
+  @NotBlank(message = "Tool name is required")
+ private String name;
+
+ @NotBlank(message = "Category is required")
+ private String category; 
     private String description;
     private String websiteUrl;
     private String logoUrl;

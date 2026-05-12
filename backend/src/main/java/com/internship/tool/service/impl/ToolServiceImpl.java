@@ -5,8 +5,9 @@ import com.internship.tool.dto.ToolResponse;
 import com.internship.tool.entity.Tool;
 import com.internship.tool.exception.ResourceNotFoundException;
 import com.internship.tool.repository.ToolRepository;
-import com.internship.tool.service.EmailService;
 import com.internship.tool.service.ToolService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +18,13 @@ import java.util.stream.Collectors;
 public class ToolServiceImpl implements ToolService {
 
     private final ToolRepository toolRepository;
-    private final EmailService emailService;
 
-    public ToolServiceImpl(ToolRepository toolRepository, EmailService emailService) {
+    public ToolServiceImpl(ToolRepository toolRepository) {
         this.toolRepository = toolRepository;
-        this.emailService = emailService;
     }
 
     @Override
+    @CacheEvict(value = {"tools", "tool", "toolSearch"}, allEntries = true)
     public ToolResponse createTool(ToolRequest request) {
         Tool tool = new Tool();
 
@@ -37,13 +37,13 @@ public class ToolServiceImpl implements ToolService {
 
         Tool savedTool = toolRepository.save(tool);
 
-        emailService.send("Tool created: " + savedTool.getName());
-
         return mapToResponse(savedTool);
     }
 
     @Override
+    @Cacheable(value = "tools")
     public List<ToolResponse> getAllTools() {
+        System.out.println("Fetching all tools from database...");
         return toolRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
@@ -51,7 +51,9 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    @Cacheable(value = "tool", key = "#id")
     public ToolResponse getToolById(Long id) {
+        System.out.println("Fetching tool by ID from database...");
         Tool tool = toolRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tool not found with id: " + id));
 
@@ -59,6 +61,7 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    @CacheEvict(value = {"tools", "tool", "toolSearch"}, allEntries = true)
     public ToolResponse updateTool(Long id, ToolRequest request) {
         Tool tool = toolRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tool not found with id: " + id));
@@ -75,6 +78,7 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    @CacheEvict(value = {"tools", "tool", "toolSearch"}, allEntries = true)
     public void deleteTool(Long id) {
         Tool tool = toolRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tool not found with id: " + id));
@@ -83,6 +87,10 @@ public class ToolServiceImpl implements ToolService {
     }
 
     @Override
+    @Cacheable(
+            value = "toolSearch",
+            key = "#name + '-' + #category + '-' + #page + '-' + #size + '-' + #sortBy + '-' + #direction"
+    )
     public Page<ToolResponse> searchTools(
             String name,
             String category,
@@ -91,6 +99,8 @@ public class ToolServiceImpl implements ToolService {
             String sortBy,
             String direction
     ) {
+        System.out.println("Fetching search tools from database...");
+
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
@@ -100,11 +110,7 @@ public class ToolServiceImpl implements ToolService {
         Page<Tool> toolPage;
 
         if (name != null && !name.isBlank() && category != null && !category.isBlank()) {
-            toolPage = toolRepository.findByNameContainingIgnoreCaseAndCategoryIgnoreCase(
-                    name,
-                    category,
-                    pageable
-            );
+            toolPage = toolRepository.findByNameContainingIgnoreCaseAndCategoryIgnoreCase(name, category, pageable);
         } else if (name != null && !name.isBlank()) {
             toolPage = toolRepository.findByNameContainingIgnoreCase(name, pageable);
         } else if (category != null && !category.isBlank()) {
